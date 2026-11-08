@@ -1,0 +1,19 @@
+# Rust build artifacts
+/target
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS noise
+Thumbs.db
+.DS_Store
+
+# Local development artifacts (not part of the app)
+/_*.ps1
+/shot*.png
+/build.log
+
+# The prebuilt release binary is tracked on purpose and shipped with the repo.
+!/Autoclicker-2.0.exe

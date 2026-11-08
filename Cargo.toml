@@ -1,0 +1,35 @@
+[package]
+name = "autoclicker"
+version = "2.0.0"
+edition = "2024"
+rust-version = "1.85"
+description = "Ultra-light, humanized autoclicker for Windows — SendInput engine, assignable hotkeys, key-bound macro, fixed modern egui UI."
+license = "MIT"
+readme = "README.md"
+keywords = ["autoclicker", "sendinput", "windows", "egui", "humanized"]
+categories = ["gui", "games"]
+
+[dependencies]
+# GUI: eframe/egui. The `wgpu` backend is deliberately disabled: this project
+# uses glow (OpenGL) — much smaller binary, no Vulkan driver dependency, and
+# none of the crashes seen with integrated Intel GPUs (igvk64.dll).
+# `renderer: Renderer::Glow` is selected explicitly in main.rs.
+eframe = { version = "0.37", features = ["glow"] }
+
+# Randomness: rand::rng() → thread-local ChaCha12, ~4 draws per click, zero
+# allocation. The foundation of the humanization engine.
+rand = "0.10"
+
+# SendInput structs/constants. Key and cursor queries are declared directly
+# from user32 in sys.rs (to avoid enabling extra features for one-line FFI).
+windows-sys = { version = "0.61", features = ["Win32_UI_Input_KeyboardAndMouse"] }
+
+[profile.release]
+# Maximum optimization: fat LTO inlines across all crates, codegen-units=1
+# gives better optimization, strip removes symbols, panic=abort removes the
+# unwinding tables entirely → a small, fast binary.
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
